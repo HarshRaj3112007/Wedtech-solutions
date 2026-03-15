@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% from "wizard/_progress.html" import wizard_progress %}
+{% block title %}Step 3: Décor — WeddingBudget.ai{% endblock %}
+{% block content %}
+{{ wizard_progress(3) }}
+
+<div class="max-w-3xl mx-auto px-4 py-8">
+    <div class="card p-8">
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Décor Preferences</h1>
+        <p class="text-gray-500 mb-8">Choose a style and complexity level for each function's décor.</p>
+
+        <form method="POST">
+            {% for func in budget_session.functions %}
+            <div class="mb-8 p-6 bg-gray-50 rounded-lg">
+                <h3 class="font-bold text-lg text-gray-900 mb-4">
+                    <span class="badge badge-indigo">{{ func.function_name.value }}</span>
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Style</label>
+                        <select name="decor_style_{{ func.id }}" class="input-field">
+                            {% for s in styles %}
+                            <option value="{{ s }}" {% if func.decor_style and func.decor_style.value == s %}selected{% endif %}>{{ s }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Complexity</label>
+                        <select name="decor_complexity_{{ func.id }}" class="input-field">
+                            {% for c in complexities %}
+                            <option value="{{ c }}" {% if func.decor_complexity and func.decor_complexity.value == c %}selected{% endif %}>{{ c }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="flex justify-between">
+                <a href="{{ url_for('wizard.step2', session_id=budget_session.id) }}" class="btn-secondary">← Back</a>
+                <button type="submit" class="btn-primary">Next: Entertainment →</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

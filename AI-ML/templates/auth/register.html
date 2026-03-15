@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Sign Up — WeddingBudget.ai{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto px-4 py-16">
+    <div class="card p-8">
+        <h1 class="text-2xl font-bold text-gray-900 mb-6 text-center">Create Account</h1>
+        <form method="POST">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <input type="text" name="name" required class="input-field" placeholder="Your name">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input type="email" name="email" required class="input-field" placeholder="you@example.com">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Organisation (optional)</label>
+                <input type="text" name="org_name" class="input-field" placeholder="Your wedding planning firm">
+            </div>
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input type="password" name="password" required minlength="6" class="input-field" placeholder="Min 6 characters">
+            </div>
+            <button type="submit" class="btn-primary w-full text-center">Create Account</button>
+        </form>
+        <p class="mt-4 text-center text-sm text-gray-500">
+            Already have an account? <a href="{{ url_for('auth.login') }}" class="text-indigo-600 font-medium">Login</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

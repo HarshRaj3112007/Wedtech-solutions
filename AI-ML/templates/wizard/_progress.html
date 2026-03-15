@@ -1,0 +1,24 @@
+{# Wizard progress bar macro — reused across all steps #}
+{% macro wizard_progress(current_step) %}
+<div class="max-w-3xl mx-auto px-4 pt-8 pb-4">
+    <div class="flex items-center justify-between mb-2">
+        {% for i in range(1, 7) %}
+        <div class="wizard-step">
+            <div class="step-dot {% if i < current_step %}step-done{% elif i == current_step %}step-active{% else %}step-pending{% endif %}">
+                {% if i < current_step %}✓{% else %}{{ i }}{% endif %}
+            </div>
+            {% if i < 6 %}
+            <div class="hidden sm:block w-12 h-0.5 {% if i < current_step %}bg-green-400{% else %}bg-gray-200{% endif %}"></div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    <div class="progress-bar">
+        <div class="progress-fill" style="width: {{ (current_step / 6 * 100)|int }}%"></div>
+    </div>
+    <div class="flex justify-between mt-2 text-xs text-gray-400">
+        <span>Basics</span><span>Stay</span><span>Décor</span>
+        <span>Entertainment</span><span>F&B</span><span>Sundries</span>
+    </div>
+</div>
+{% endmacro %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from "wizard/_progress.html" import wizard_progress %}
+{% block title %}Step 4: Entertainment — WeddingBudget.ai{% endblock %}
+{% block content %}
+{{ wizard_progress(4) }}
+
+<div class="max-w-3xl mx-auto px-4 py-8">
+    <div class="card p-8">
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Entertainment</h1>
+        <p class="text-gray-500 mb-8">Select entertainment types for each function.</p>
+
+        <form method="POST">
+            {% for func in budget_session.functions %}
+            <div class="mb-8 p-6 bg-gray-50 rounded-lg">
+                <h3 class="font-bold text-lg text-gray-900 mb-4">
+                    <span class="badge badge-indigo">{{ func.function_name.value }}</span>
+                </h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {% for at in artist_types %}
+                    <label class="cursor-pointer">
+                        <input type="checkbox" name="artist_types_{{ func.id }}" value="{{ at }}" class="peer hidden"
+                               {% if func.artist_types and at in func.artist_types %}checked{% endif %}>
+                        <div class="p-3 border-2 border-gray-200 rounded-lg text-center text-sm font-medium
+                                    peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition-all hover:border-gray-300">
+                            {{ at }}
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="flex justify-between">
+                <a href="{{ url_for('wizard.step3', session_id=budget_session.id) }}" class="btn-secondary">← Back</a>
+                <button type="submit" class="btn-primary">Next: Food & Beverage →</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

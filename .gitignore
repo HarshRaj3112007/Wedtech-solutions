@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Database
+instance/
+*.db
+*.sqlite3
+
+# Environment files
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test / CI
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node (for existing products)
+node_modules/
+.next/

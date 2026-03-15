@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{% if artist %}Edit{% else %}Add{% endif %} Artist — Admin{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto px-4 py-8">
+    <div class="card p-8">
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">
+            {% if artist %}Edit Artist{% else %}Add New Artist{% endif %}
+        </h1>
+
+        <form method="POST">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Name (leave blank for generic tier)</label>
+                <input type="text" name="name" value="{{ artist.name or '' if artist else '' }}" class="input-field"
+                       placeholder="e.g. Arijit Singh">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Artist Type</label>
+                <select name="artist_type" class="input-field">
+                    {% for at in artist_types %}
+                    <option value="{{ at }}" {% if artist and artist.artist_type.value == at %}selected{% endif %}>{{ at }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tier Label</label>
+                <input type="text" name="tier_label" required
+                       value="{{ artist.tier_label if artist else '' }}" class="input-field"
+                       placeholder="e.g. City DJ, A-List Singer">
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fee Min (₹)</label>
+                    <input type="number" name="fee_min" required
+                           value="{{ artist.fee_min | int if artist else '' }}" class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fee Max (₹)</label>
+                    <input type="number" name="fee_max" required
+                           value="{{ artist.fee_max | int if artist else '' }}" class="input-field">
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" name="is_named" value="1"
+                           {% if artist and artist.is_named %}checked{% endif %}>
+                    <span class="text-sm font-medium text-gray-700">Named artist (not generic tier)</span>
+                </label>
+            </div>
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                <textarea name="notes" class="input-field" rows="3">{{ artist.notes or '' if artist else '' }}</textarea>
+            </div>
+            <div class="flex gap-3">
+                <button type="submit" class="btn-primary">
+                    {% if artist %}Save Changes{% else %}Add Artist{% endif %}
+                </button>
+                <a href="{{ url_for('admin.artists') }}" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}WeddingBudget.ai — AI-Powered Wedding Budget Estimation{% endblock %}
+
+{% block content %}
+<div class="gradient-bg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
+        <h1 class="text-5xl font-bold text-white mb-6">
+            Your Dream Wedding,<br>
+            <span class="text-indigo-300">Precisely Budgeted</span>
+        </h1>
+        <p class="text-xl text-indigo-200 mb-10 max-w-2xl mx-auto">
+            India's first AI-powered wedding budget estimator. Get a scientific,
+            itemised, client-presentable budget in minutes — not guesswork.
+        </p>
+        <a href="{{ url_for('wizard.start') }}" class="btn-primary text-lg px-8 py-4 inline-block">
+            Start Your Estimate →
+        </a>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">6 Cost Heads, One Smart Estimate</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="card p-6">
+            <div class="text-3xl mb-3">🏨</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Venue & Accommodation</h3>
+            <p class="text-gray-600 text-sm">Room blocks, banquet halls, per-night rates across 10+ destination cities.</p>
+        </div>
+        <div class="card p-6">
+            <div class="text-3xl mb-3">🍽️</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Food & Beverage</h3>
+            <p class="text-gray-600 text-sm">Per-head costs by meal type, bar packages, specialty counters, staffing.</p>
+        </div>
+        <div class="card p-6">
+            <div class="text-3xl mb-3">🎨</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Décor & Design</h3>
+            <p class="text-gray-600 text-sm">AI-predicted costs from style, complexity, and reference images.</p>
+        </div>
+        <div class="card p-6">
+            <div class="text-3xl mb-3">🎤</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Artists & Entertainment</h3>
+            <p class="text-gray-600 text-sm">Named artists or generic tiers — DJs, bands, choreographers, anchors.</p>
+        </div>
+        <div class="card p-6">
+            <div class="text-3xl mb-3">🚗</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Logistics & Transfers</h3>
+            <p class="text-gray-600 text-sm">Guest transfers, baraat logistics, SFX, drone shows — all calculated.</p>
+        </div>
+        <div class="card p-6">
+            <div class="text-3xl mb-3">📦</div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Sundries & Basics</h3>
+            <p class="text-gray-600 text-sm">Room baskets, gift hampers, stationery, photo/video, rituals + contingency.</p>
+        </div>
+    </div>
+</div>
+
+<div class="bg-indigo-50 py-16">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Built for Indian Destination Weddings</h2>
+        <p class="text-gray-600 mb-8">
+            Supporting Udaipur, Jaipur, Mumbai, Delhi, Goa, Lonavala, Mussoorie, Shimla, Coorg and more.
+            All rates are based on current market data, admin-editable, and city-adjusted.
+        </p>
+        <a href="{{ url_for('wizard.start') }}" class="btn-primary">Create Your First Estimate</a>
+    </div>
+</div>
+{% endblock %}
