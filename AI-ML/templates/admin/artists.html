@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Artist Directory — Admin{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Artist Directory</h1>
+        <div class="flex gap-3">
+            <a href="{{ url_for('admin.add_artist') }}" class="btn-primary text-sm">+ Add Artist</a>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn-secondary text-sm">← Dashboard</a>
+        </div>
+    </div>
+
+    <div class="card overflow-x-auto">
+        <table class="table-auto w-full">
+            <thead>
+                <tr>
+                    <th>Name / Tier</th>
+                    <th>Type</th>
+                    <th>Fee Range</th>
+                    <th>Named?</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in artists %}
+                <tr>
+                    <td class="font-medium">{{ a.name or a.tier_label }}</td>
+                    <td><span class="badge badge-indigo">{{ a.artist_type.value }}</span></td>
+                    <td>{{ a.fee_min | inr }} – {{ a.fee_max | inr }}</td>
+                    <td>
+                        {% if a.is_named %}
+                        <span class="badge badge-green">Named</span>
+                        {% else %}
+                        <span class="badge" style="background:#f3f4f6;color:#6b7280">Generic</span>
+                        {% endif %}
+                    </td>
+                    <td class="flex gap-2">
+                        <a href="{{ url_for('admin.edit_artist', artist_id=a.id) }}"
+                           class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">Edit</a>
+                        <form method="POST" action="{{ url_for('admin.delete_artist', artist_id=a.id) }}"
+                              onsubmit="return confirm('Delete this artist?')">
+                            <button type="submit" class="text-red-500 hover:text-red-700 text-sm font-medium">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

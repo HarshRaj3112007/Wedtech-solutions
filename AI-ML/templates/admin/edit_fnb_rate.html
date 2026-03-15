@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Edit F&B Rate — Admin{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto px-4 py-8">
+    <div class="card p-8">
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Edit F&B Rate</h1>
+        <p class="text-gray-500 mb-6">
+            {{ card.meal_type.value.replace('_', ' ').title() }} ·
+            {{ card.bar_type.value.replace('_', ' ').title() }}
+        </p>
+
+        <form method="POST">
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Per Head Min (₹)</label>
+                    <input type="number" name="per_head_min" value="{{ card.per_head_min | int }}" class="input-field" step="50">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Per Head Max (₹)</label>
+                    <input type="number" name="per_head_max" value="{{ card.per_head_max | int }}" class="input-field" step="50">
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button type="submit" class="btn-primary">Save Changes</button>
+                <a href="{{ url_for('admin.fnb_rates') }}" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

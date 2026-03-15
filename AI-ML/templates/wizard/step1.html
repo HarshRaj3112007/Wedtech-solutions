@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% from "wizard/_progress.html" import wizard_progress %}
+{% block title %}Step 1: Wedding Basics — WeddingBudget.ai{% endblock %}
+{% block content %}
+{{ wizard_progress(1) }}
+
+<div class="max-w-3xl mx-auto px-4 py-8">
+    <div class="card p-8">
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Let's start with the basics</h1>
+        <p class="text-gray-500 mb-8">Tell us about the wedding — couple names, city, and events planned.</p>
+
+        <form method="POST" id="step1Form">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Partner 1 Name</label>
+                    <input type="text" name="couple_name_1" class="input-field" placeholder="e.g. Priya">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Partner 2 Name</label>
+                    <input type="text" name="couple_name_2" class="input-field" placeholder="e.g. Rahul">
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Wedding City</label>
+                <select name="city" class="input-field" required>
+                    <option value="">Select a city...</option>
+                    {% for city in cities %}
+                    <option value="{{ city }}">{{ city }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                    <input type="date" name="wedding_start_date" class="input-field">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                    <input type="date" name="wedding_end_date" class="input-field">
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Number of Functions/Events</label>
+                <div class="flex items-center gap-4">
+                    <button type="button" onclick="adjustFunctions(-1)" class="w-10 h-10 rounded-full bg-gray-100 text-gray-700 font-bold text-lg hover:bg-gray-200">−</button>
+                    <input type="number" name="num_functions" id="numFunctions" value="3" min="1" max="10" class="input-field w-20 text-center" readonly>
+                    <button type="button" onclick="adjustFunctions(1)" class="w-10 h-10 rounded-full bg-gray-100 text-gray-700 font-bold text-lg hover:bg-gray-200">+</button>
+                </div>
+            </div>
+
+            <div id="functionsContainer" class="space-y-4 mb-8">
+                <!-- Populated by JS -->
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit" class="btn-primary">Next: Accommodation →</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+const functionTypes = {{ function_types | tojson }};
+
+function adjustFunctions(delta) {
+    const input = document.getElementById('numFunctions');
+    let val = parseInt(input.value) + delta;
+    val = Math.max(1, Math.min(10, val));
+    input.value = val;
+    renderFunctions(val);
+}
+
+function renderFunctions(count) {
+    const container = document.getElementById('functionsContainer');
+    container.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+        const div = document.createElement('div');
+        div.className = 'grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg';
+        div.innerHTML = `
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Function ${i+1} Type</label>
+                <select name="function_name_${i}" class="input-field" required>
+                    ${functionTypes.map(ft => `<option value="${ft}">${ft}</option>`).join('')}
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Est. Guest Count (optional)</label>
+                <input type="number" name="function_guests_${i}" class="input-field" placeholder="Leave blank to use total">
+            </div>
+        `;
+        container.appendChild(div);
+    }
+}
+
+renderFunctions(3);
+</script>
+{% endblock %}

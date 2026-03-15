@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}City Rate Cards — Admin{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">City Rate Cards</h1>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn-secondary text-sm">← Dashboard</a>
+    </div>
+
+    <div class="card overflow-x-auto">
+        <table class="table-auto w-full">
+            <thead>
+                <tr>
+                    <th>City</th>
+                    <th>Hotel Tier</th>
+                    <th>Room Rate (Min–Max)</th>
+                    <th>Banquet/Day (Min–Max)</th>
+                    <th>Updated</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for card in cards %}
+                <tr>
+                    <td class="font-medium">{{ card.city }}</td>
+                    <td><span class="badge badge-indigo">{{ card.hotel_tier.value }}</span></td>
+                    <td>{{ card.room_rate_min | inr }} – {{ card.room_rate_max | inr }}</td>
+                    <td>{{ card.banquet_rate_per_day_min | inr }} – {{ card.banquet_rate_per_day_max | inr }}</td>
+                    <td class="text-sm text-gray-400">{{ card.updated_at.strftime('%d %b %Y') if card.updated_at else 'N/A' }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_city_rate', card_id=card.id) }}"
+                           class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">Edit</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

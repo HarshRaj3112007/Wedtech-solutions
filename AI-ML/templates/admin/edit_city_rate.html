@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Edit Rate Card — Admin{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto px-4 py-8">
+    <div class="card p-8">
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Edit City Rate Card</h1>
+        <p class="text-gray-500 mb-6">{{ card.city }} — {{ card.hotel_tier.value }}</p>
+
+        <form method="POST">
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Room Rate Min (₹/night)</label>
+                    <input type="number" name="room_rate_min" value="{{ card.room_rate_min | int }}" class="input-field" step="100">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Room Rate Max (₹/night)</label>
+                    <input type="number" name="room_rate_max" value="{{ card.room_rate_max | int }}" class="input-field" step="100">
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Banquet Min (₹/day)</label>
+                    <input type="number" name="banquet_min" value="{{ card.banquet_rate_per_day_min | int }}" class="input-field" step="1000">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Banquet Max (₹/day)</label>
+                    <input type="number" name="banquet_max" value="{{ card.banquet_rate_per_day_max | int }}" class="input-field" step="1000">
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button type="submit" class="btn-primary">Save Changes</button>
+                <a href="{{ url_for('admin.city_rates') }}" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
