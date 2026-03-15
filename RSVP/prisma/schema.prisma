@@ -1,0 +1,488 @@
+// ─────────────────────────────────────────────────────────────
+// Wedding RSVP Platform — Prisma Schema
+// Product 2 of the WedTech Innovation Challenge
+// "Events by Athea" — Indian Destination Wedding Planning
+// ─────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────────────────────
+
+enum RelationshipSide {
+  BRIDE
+  GROOM
+  MUTUAL
+}
+
+enum DietaryPreference {
+  VEG
+  NON_VEG
+  JAIN
+  VEGAN
+  CUSTOM
+}
+
+enum RSVPStatus {
+  PENDING
+  ATTENDING
+  DECLINED
+}
+
+enum CheckInMethod {
+  QR
+  MANUAL
+}
+
+enum InviteTheme {
+  FLORAL
+  ROYAL
+  MINIMAL
+  BOHO
+  TRADITIONAL
+}
+
+enum InviteLanguage {
+  ENGLISH
+  HINDI
+  TAMIL
+  TELUGU
+  BENGALI
+  MARATHI
+  GUJARATI
+  KANNADA
+  PUNJABI
+}
+
+enum MessageChannel {
+  WHATSAPP
+  SMS
+  EMAIL
+}
+
+enum MessageStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+enum PlanTier {
+  FREE
+  STARTER
+  PROFESSIONAL
+  ENTERPRISE
+}
+
+enum PhotoStatus {
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+}
+
+// ─────────────────────────────────────────────────────────────
+// PLANNER / ORGANISATION
+// ─────────────────────────────────────────────────────────────
+
+model Planner {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  password  String // bcrypt hashed
+  planTier  PlanTier @default(FREE)
+  logoUrl   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // API key for CRM integration — hashed, displayed once on creation
+  apiKey       String? @unique
+  apiKeyPrefix String? // first 8 chars for identification
+
+  weddings Wedding[]
+  sessions Session[]
+  accounts Account[]
+
+  @@map("planners")
+}
+
+// NextAuth adapter models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user Planner @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+
+  user Planner @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ─────────────────────────────────────────────────────────────
+// WEDDING
+// ─────────────────────────────────────────────────────────────
+
+model Wedding {
+  id                String    @id @default(cuid())
+  plannerId         String
+  brideName         String
+  groomName         String
+  weddingCode       String    @unique // unique slug, e.g. "ananya-rohan-2026"
+  city              String?
+  venueName         String?
+  primaryColorHex   String    @default("#B8860B") // gold
+  secondaryColorHex String    @default("#800020") // burgundy
+  bannerImageUrl    String?
+  timezone          String    @default("Asia/Kolkata")
+  rsvpDeadline      DateTime?
+  crmWebhookUrl     String?   // CRM webhook URL for RSVP change notifications
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  planner            Planner             @relation(fields: [plannerId], references: [id], onDelete: Cascade)
+  events             WeddingEvent[]
+  guests             Guest[]
+  accommodationRooms AccommodationRoom[]
+  inviteTemplates    InviteTemplate[]
+  photoWallEnabled   Boolean             @default(false)
+  photos             Photo[]
+
+  // Display screen share tokens
+  displayTokens DisplayToken[]
+
+  @@index([plannerId])
+  @@index([weddingCode])
+  @@map("weddings")
+}
+
+// ─────────────────────────────────────────────────────────────
+// WEDDING EVENT (Sangeet, Mehendi, Reception, etc.)
+// ─────────────────────────────────────────────────────────────
+
+model WeddingEvent {
+  id               String   @id @default(cuid())
+  weddingId        String
+  name             String // e.g. "Sangeet Night"
+  slug             String // URL-safe, e.g. "sangeet-night"
+  date             DateTime
+  time             String? // display time, e.g. "7:00 PM"
+  venue            String?
+  dressCode        String?
+  description      String?  @db.Text
+  inviteTemplateId String?
+  isActive         Boolean  @default(true)
+  checkInPin       String? // 4-6 digit PIN for check-in staff
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  wedding           Wedding            @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  inviteTemplate    InviteTemplate?    @relation(fields: [inviteTemplateId], references: [id])
+  guestEventInvites GuestEventInvite[]
+  seatingTables     SeatingTable[]
+  checkIns          CheckIn[]
+
+  @@unique([weddingId, slug])
+  @@index([weddingId])
+  @@map("wedding_events")
+}
+
+// ─────────────────────────────────────────────────────────────
+// GUEST
+// ─────────────────────────────────────────────────────────────
+
+model Guest {
+  id                  String            @id @default(cuid())
+  weddingId           String
+  name                String
+  phone               String // primary identifier, +91 format
+  email               String?
+  relationshipSide    RelationshipSide  @default(MUTUAL)
+  groupTag            String? // e.g. "College Friends", "Family"
+  isVip               Boolean           @default(false)
+  isOutstation        Boolean           @default(false)
+  dietaryPref         DietaryPreference @default(VEG)
+  dietaryNotes        String? // free-text allergy/custom notes
+  accommodationRoomId String?
+  plusOneAllowed      Boolean           @default(false)
+  token               String            @unique @default(cuid()) // tokenised guest link
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  wedding           Wedding            @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  accommodationRoom AccommodationRoom? @relation(fields: [accommodationRoomId], references: [id])
+  eventInvites      GuestEventInvite[]
+  checkIns          CheckIn[]
+  communicationLogs CommunicationLog[]
+  plusOnes          PlusOne[]
+  photos            Photo[]
+
+  @@unique([weddingId, phone]) // deduplicate by phone per wedding
+  @@index([weddingId])
+  @@index([phone])
+  @@index([token])
+  @@map("guests")
+}
+
+// ─────────────────────────────────────────────────────────────
+// GUEST EVENT INVITE — junction table linking guests to events
+// with per-event RSVP status
+// ─────────────────────────────────────────────────────────────
+
+model GuestEventInvite {
+  id             String     @id @default(cuid())
+  guestId        String
+  eventId        String
+  rsvpStatus     RSVPStatus @default(PENDING)
+  plusOneCount   Int        @default(0) // 0 or 1
+  childrenCount  Int        @default(0)
+  specialNotes   String? // free text from guest
+  respondedAt    DateTime?
+  reminderCount  Int        @default(0)
+  lastRemindedAt DateTime?
+  seatingTableId String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  guest        Guest         @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  event        WeddingEvent  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  seatingTable SeatingTable? @relation(fields: [seatingTableId], references: [id])
+
+  @@unique([guestId, eventId]) // one invite per guest per event
+  @@index([eventId])
+  @@index([guestId])
+  @@index([rsvpStatus])
+  @@map("guest_event_invites")
+}
+
+// ─────────────────────────────────────────────────────────────
+// PLUS-ONE — sub-profile for guest's companion
+// ─────────────────────────────────────────────────────────────
+
+model PlusOne {
+  id           String            @id @default(cuid())
+  guestId      String
+  name         String
+  dietaryPref  DietaryPreference @default(VEG)
+  dietaryNotes String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  guest Guest @relation(fields: [guestId], references: [id], onDelete: Cascade)
+
+  @@index([guestId])
+  @@map("plus_ones")
+}
+
+// ─────────────────────────────────────────────────────────────
+// ACCOMMODATION
+// ─────────────────────────────────────────────────────────────
+
+model AccommodationRoom {
+  id           String   @id @default(cuid())
+  weddingId    String
+  hotelName    String
+  roomNumber   String
+  roomType     String // e.g. "Deluxe", "Suite", "Standard"
+  maxOccupancy Int      @default(2)
+  checkInDate  DateTime
+  checkOutDate DateTime
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  wedding        Wedding @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  assignedGuests Guest[]
+
+  @@unique([weddingId, hotelName, roomNumber])
+  @@index([weddingId])
+  @@map("accommodation_rooms")
+}
+
+// ─────────────────────────────────────────────────────────────
+// SEATING
+// ─────────────────────────────────────────────────────────────
+
+model SeatingTable {
+  id          String   @id @default(cuid())
+  weddingId   String
+  eventId     String
+  tableNumber Int
+  label       String? // e.g. "Rose Table", "Table 5"
+  capacity    Int      @default(10)
+  zone        String? // e.g. "Stage Side", "Entrance", "Garden"
+  positionX   Float? // for visual seating chart canvas
+  positionY   Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  event          WeddingEvent       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  assignedGuests GuestEventInvite[]
+
+  @@unique([weddingId, eventId, tableNumber])
+  @@index([eventId])
+  @@map("seating_tables")
+}
+
+// ─────────────────────────────────────────────────────────────
+// INVITE TEMPLATES
+// ─────────────────────────────────────────────────────────────
+
+model InviteTemplate {
+  id                 String         @id @default(cuid())
+  weddingId          String
+  eventId            String? // null = wedding-wide template
+  theme              InviteTheme    @default(FLORAL)
+  language           InviteLanguage @default(ENGLISH)
+  backgroundImageUrl String?
+  animated           Boolean        @default(false)
+  customMessage      String?        @db.Text
+  templateConfig     Json? // flexible JSON config for layout/styling
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  wedding Wedding        @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  events  WeddingEvent[]
+
+  @@index([weddingId])
+  @@map("invite_templates")
+}
+
+// ─────────────────────────────────────────────────────────────
+// CHECK-IN — event-day attendance tracking
+// ─────────────────────────────────────────────────────────────
+
+model CheckIn {
+  id          String        @id @default(cuid())
+  guestId     String
+  eventId     String
+  checkedInAt DateTime      @default(now())
+  checkedInBy String? // staff member name
+  method      CheckInMethod @default(MANUAL)
+
+  guest Guest        @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  event WeddingEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([guestId, eventId]) // prevent duplicate check-ins
+  @@index([eventId])
+  @@map("check_ins")
+}
+
+// ─────────────────────────────────────────────────────────────
+// COMMUNICATION LOG — track every message sent to guests
+// ─────────────────────────────────────────────────────────────
+
+model CommunicationLog {
+  id        String         @id @default(cuid())
+  guestId   String
+  channel   MessageChannel
+  content   String         @db.Text
+  status    MessageStatus  @default(QUEUED)
+  sentAt    DateTime?
+  metadata  Json? // provider response, message IDs, etc.
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  guest Guest @relation(fields: [guestId], references: [id], onDelete: Cascade)
+
+  @@index([guestId])
+  @@index([status])
+  @@map("communication_logs")
+}
+
+// ─────────────────────────────────────────────────────────────
+// REMINDER SCHEDULE — configurable per wedding
+// ─────────────────────────────────────────────────────────────
+
+model ReminderSchedule {
+  id        String         @id @default(cuid())
+  weddingId String
+  dayOffset Int // days after invite sent (1, 3, 6, etc.)
+  channel   MessageChannel
+  template  String         @db.Text // editable message template
+  isActive  Boolean        @default(true)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@unique([weddingId, dayOffset, channel])
+  @@index([weddingId])
+  @@map("reminder_schedules")
+}
+
+// ─────────────────────────────────────────────────────────────
+// PHOTO WALL — post-event photo sharing
+// ─────────────────────────────────────────────────────────────
+
+model Photo {
+  id           String      @id @default(cuid())
+  weddingId    String
+  guestId      String? // null if uploaded by planner
+  imageUrl     String
+  thumbnailUrl String?
+  caption      String?
+  status       PhotoStatus @default(PENDING_REVIEW)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  wedding Wedding @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  guest   Guest?  @relation(fields: [guestId], references: [id])
+
+  @@index([weddingId])
+  @@index([status])
+  @@map("photos")
+}
+
+// ─────────────────────────────────────────────────────────────
+// DISPLAY TOKEN — time-limited share tokens for live screens
+// ─────────────────────────────────────────────────────────────
+
+model DisplayToken {
+  id        String   @id @default(cuid())
+  weddingId String
+  token     String   @unique @default(cuid())
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  wedding Wedding @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([weddingId])
+  @@map("display_tokens")
+}
