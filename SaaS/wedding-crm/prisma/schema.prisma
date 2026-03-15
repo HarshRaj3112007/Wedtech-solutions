@@ -1,0 +1,332 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ==================== USER & AUTH ====================
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("ADMIN") // ADMIN, RELATIONSHIP_MANAGER, VENDOR_COORDINATOR, CLIENT
+  phone     String?
+  avatar    String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  assignedLeads      Lead[]               @relation("AssignedRM")
+  createdLeads       Lead[]               @relation("CreatedBy")
+  assignedWeddings   Wedding[]            @relation("WeddingRM")
+  activities         Activity[]
+  notes              Note[]
+  clientPortalAccess ClientPortalAccess[]
+}
+
+// ==================== MODULE 1: LEADS & PIPELINE ====================
+model Lead {
+  id           String    @id @default(cuid())
+  name         String
+  email        String?
+  phone        String?
+  source       String?
+  status       String    @default("NEW")
+  budget       Float?
+  weddingDate  DateTime?
+  venue        String?
+  guestCount   Int?
+  requirements String?
+  notes        String?
+  priority     String    @default("MEDIUM")
+  lostReason   String?
+  nextFollowUp DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  assignedToId String?
+  assignedTo   User?      @relation("AssignedRM", fields: [assignedToId], references: [id])
+  createdById  String?
+  createdBy    User?      @relation("CreatedBy", fields: [createdById], references: [id])
+  activities   Activity[]
+  wedding      Wedding?
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  type        String
+  title       String
+  description String?
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  leadId    String?
+  lead      Lead?    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  weddingId String?
+  wedding   Wedding? @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+// ==================== MODULE 2: WEDDING DASHBOARD ====================
+model Wedding {
+  id          String   @id @default(cuid())
+  clientName  String
+  partnerName String?
+  weddingDate DateTime
+  venue       String?
+  city        String?
+  budget      Float?
+  guestCount  Int?
+  status      String   @default("PLANNING")
+  theme       String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  leadId       String? @unique
+  lead         Lead?   @relation(fields: [leadId], references: [id])
+  assignedRMId String?
+  assignedRM   User?   @relation("WeddingRM", fields: [assignedRMId], references: [id])
+
+  // RSVP Platform integration
+  rsvpPlatformUrl String? // e.g. "http://localhost:3000"
+  rsvpWeddingId   String? // Wedding ID on the RSVP platform
+  rsvpApiKey      String? // Bearer token for authenticating with RSVP CRM API
+
+  functions          WeddingFunction[]
+  vendorAssignments  VendorAssignment[]
+  checklists         Checklist[]
+  activities         Activity[]
+  notes              Note[]
+  payments           Payment[]
+  clientPortalAccess ClientPortalAccess[]
+  rsvpGuests         RSVPGuest[]
+}
+
+model WeddingFunction {
+  id         String    @id @default(cuid())
+  name       String
+  date       DateTime?
+  venue      String?
+  status     String    @default("PLANNING")
+  budget     Float?
+  guestCount Int?
+  notes      String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  weddingId         String
+  wedding           Wedding            @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  tasks             FunctionTask[]
+  vendorAssignments VendorAssignment[]
+}
+
+model FunctionTask {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  status      String    @default("PENDING")
+  dueDate     DateTime?
+  priority    String    @default("MEDIUM")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  functionId String
+  function   WeddingFunction @relation(fields: [functionId], references: [id], onDelete: Cascade)
+}
+
+// ==================== MODULE 3: SOP & CHECKLIST ENGINE ====================
+model SOPTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  category    String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items      SOPTemplateItem[]
+  checklists Checklist[]
+}
+
+model SOPTemplateItem {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+  orderIndex  Int
+  daysOffset  Int?
+  category    String?
+  isMandatory Boolean @default(false)
+
+  templateId String
+  template   SOPTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+}
+
+model Checklist {
+  id        String   @id @default(cuid())
+  name      String
+  status    String   @default("ACTIVE")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  weddingId  String
+  wedding    Wedding      @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  templateId String?
+  template   SOPTemplate? @relation(fields: [templateId], references: [id])
+
+  items ChecklistItem[]
+}
+
+model ChecklistItem {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  isCompleted Boolean   @default(false)
+  dueDate     DateTime?
+  completedAt DateTime?
+  orderIndex  Int       @default(0)
+  notes       String?
+  category    String?
+  isMandatory Boolean   @default(false)
+
+  checklistId String
+  checklist   Checklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+}
+
+// ==================== MODULE 4: VENDOR MANAGEMENT ====================
+model Vendor {
+  id         String   @id @default(cuid())
+  name       String
+  category   String
+  email      String?
+  phone      String?
+  address    String?
+  city       String?
+  rating     Float?
+  priceRange String?
+  notes      String?
+  isActive   Boolean  @default(true)
+  website    String?
+  instagram  String?
+  portfolio  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  assignments VendorAssignment[]
+  followUps   VendorFollowUp[]
+}
+
+model VendorAssignment {
+  id          String   @id @default(cuid())
+  status      String   @default("PROPOSED")
+  agreedPrice Float?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  vendorId   String
+  vendor     Vendor           @relation(fields: [vendorId], references: [id])
+  weddingId  String
+  wedding    Wedding          @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  functionId String?
+  function   WeddingFunction? @relation(fields: [functionId], references: [id])
+}
+
+model VendorFollowUp {
+  id           String    @id @default(cuid())
+  type         String
+  notes        String?
+  followUpDate DateTime
+  isCompleted  Boolean   @default(false)
+  completedAt  DateTime?
+  createdAt    DateTime  @default(now())
+
+  vendorId String
+  vendor   Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+}
+
+// ==================== MODULE 5: DATA LIBRARY ====================
+model DataLibraryItem {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  category  String
+  tags      String?
+  fileUrl   String?
+  fileType  String?
+  isPublic  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==================== MODULE 6: CLIENT PORTAL ====================
+model ClientPortalAccess {
+  id           String    @id @default(cuid())
+  isActive     Boolean   @default(true)
+  accessToken  String    @unique
+  permissions  String    @default("VIEW_TIMELINE,VIEW_CHECKLIST")
+  lastAccessed DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  weddingId String
+  wedding   Wedding @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
+}
+
+// ==================== SHARED ====================
+model Note {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  weddingId String?
+  wedding   Wedding? @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Payment {
+  id        String    @id @default(cuid())
+  amount    Float
+  type      String
+  status    String    @default("PENDING")
+  dueDate   DateTime?
+  paidDate  DateTime?
+  notes     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  weddingId String
+  wedding   Wedding @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+}
+
+// ==================== MODULE 7: RSVP INTEGRATION CACHE ====================
+model RSVPGuest {
+  id            String   @id @default(cuid())
+  weddingId     String
+  rsvpGuestId   String   // ID from the RSVP platform
+  name          String
+  phone         String
+  email         String?
+  side          String?  // BRIDE, GROOM, MUTUAL
+  groupTag      String?
+  isVip         Boolean  @default(false)
+  dietaryPref   String?
+  overallStatus String   @default("PENDING") // PENDING, ATTENDING, DECLINED
+  rsvpData      String?  // JSON string: per-event RSVP details
+  lastSyncedAt  DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  wedding Wedding @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+
+  @@unique([weddingId, rsvpGuestId])
+  @@unique([weddingId, phone])
+}
