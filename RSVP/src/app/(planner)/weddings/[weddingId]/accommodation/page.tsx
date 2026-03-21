@@ -127,44 +127,50 @@ export default function AccommodationPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 glass border-[#d4a017]/10">
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-6">
           <Link href={`/weddings/${params.weddingId}`}>
             <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
           </Link>
           <div className="flex-1">
-            <h1 className="text-lg font-bold">Accommodation</h1>
+            <h1 className="text-lg font-bold font-display">Accommodation</h1>
             <p className="text-xs text-muted-foreground">
               {totalRooms} rooms &middot; {occupiedRooms} occupied &middot; {fullRooms} full
             </p>
           </div>
-          <Button size="sm" onClick={() => setShowAdd(true)}>
+          <Button size="sm" onClick={() => setShowAdd(true)} className="bg-gradient-to-r from-[#8b1a34] to-[#b42a4a] text-[#f5e6d0] shadow-wedding hover:shadow-wedding-lg transition-all">
             <Plus className="mr-2 h-4 w-4" /> Add Room
           </Button>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-6 py-6 space-y-6">
+      <main className="mx-auto max-w-6xl px-6 py-6 space-y-6 bg-mesh">
         {/* Overview cards */}
         <div className="grid gap-4 sm:grid-cols-3">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Total Rooms</CardDescription>
-              <CardTitle className="text-2xl">{totalRooms}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Partially/Fully Occupied</CardDescription>
-              <CardTitle className="text-2xl text-blue-600">{occupiedRooms}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Empty Rooms</CardDescription>
-              <CardTitle className="text-2xl text-amber-600">{totalRooms - occupiedRooms}</CardTitle>
-            </CardHeader>
-          </Card>
+          <div className="card-3d">
+            <Card className="card-3d-inner glass-card">
+              <CardHeader className="pb-2">
+                <CardDescription>Total Rooms</CardDescription>
+                <CardTitle className="text-2xl">{totalRooms}</CardTitle>
+              </CardHeader>
+            </Card>
+          </div>
+          <div className="card-3d">
+            <Card className="card-3d-inner glass-card">
+              <CardHeader className="pb-2">
+                <CardDescription>Partially/Fully Occupied</CardDescription>
+                <CardTitle className="text-2xl text-blue-600">{occupiedRooms}</CardTitle>
+              </CardHeader>
+            </Card>
+          </div>
+          <div className="card-3d">
+            <Card className="card-3d-inner glass-card">
+              <CardHeader className="pb-2">
+                <CardDescription>Empty Rooms</CardDescription>
+                <CardTitle className="text-2xl text-amber-600">{totalRooms - occupiedRooms}</CardTitle>
+              </CardHeader>
+            </Card>
+          </div>
         </div>
 
         {loading && (
@@ -175,7 +181,7 @@ export default function AccommodationPage() {
 
         {/* Rooms by hotel */}
         {Array.from(hotels.entries()).map(([hotelName, hotelRooms]) => (
-          <Card key={hotelName}>
+          <Card key={hotelName} className="glass-card">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Hotel className="h-5 w-5" /> {hotelName}
@@ -290,7 +296,7 @@ export default function AccommodationPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowAdd(false)}>Cancel</Button>
-            <Button onClick={handleAddRoom} disabled={saving}>
+            <Button onClick={handleAddRoom} disabled={saving} className="bg-gradient-to-r from-[#8b1a34] to-[#b42a4a] text-[#f5e6d0] shadow-wedding hover:shadow-wedding-lg transition-all">
               {saving ? "Adding..." : "Add Room"}
             </Button>
           </DialogFooter>

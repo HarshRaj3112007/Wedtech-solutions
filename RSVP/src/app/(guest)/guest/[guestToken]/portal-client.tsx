@@ -188,7 +188,7 @@ export function GuestPortalClient({ data }: { data: PortalData }) {
 
         {/* Events */}
         <div className="space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             Your Events
           </h2>
           {invites.map((inv, i) => {
@@ -200,7 +200,7 @@ export function GuestPortalClient({ data }: { data: PortalData }) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
               >
-                <Card>
+                <Card className="glass-card">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <CardTitle className="text-base">{inv.event.name}</CardTitle>
@@ -247,7 +247,7 @@ export function GuestPortalClient({ data }: { data: PortalData }) {
                   <CardContent className="space-y-3">
                     {/* Seating info */}
                     {inv.seatingTable && (
-                      <div className="rounded-lg bg-muted px-3 py-2 text-sm">
+                      <div className="glass-card rounded-lg border-[#d4a017]/15 px-3 py-2 text-sm">
                         Table {inv.seatingTable.tableNumber}
                         {inv.seatingTable.label && ` — ${inv.seatingTable.label}`}
                         {inv.seatingTable.zone && ` (${inv.seatingTable.zone})`}
@@ -270,7 +270,7 @@ export function GuestPortalClient({ data }: { data: PortalData }) {
                       <div className="flex gap-2">
                         <Button
                           size="sm"
-                          className="flex-1"
+                          className="flex-1 shadow-wedding"
                           onClick={() => handleRsvp(inv.event.id, "ATTENDING")}
                           disabled={submitting === inv.event.id}
                           style={{ backgroundColor: wedding.primaryColorHex }}
@@ -367,7 +367,7 @@ export function GuestPortalClient({ data }: { data: PortalData }) {
         )}
 
         {/* QR code link */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <QrCode className="h-4 w-4" /> Check-In Pass

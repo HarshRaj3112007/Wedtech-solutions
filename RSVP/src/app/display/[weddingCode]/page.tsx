@@ -102,10 +102,8 @@ export default function LiveDisplayPage() {
 
   return (
     <div
-      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-8 py-12"
-      style={{
-        background: `linear-gradient(135deg, ${data.primaryColorHex}20, #000000 50%, ${data.secondaryColorHex}20)`,
-      }}
+      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#2d0811] to-[#1a0610] bg-mandala px-8 py-12"
+      style={{}}
     >
       {/* Celebration animation */}
       <AnimatePresence>
@@ -124,7 +122,7 @@ export default function LiveDisplayPage() {
               >
                 🎉
               </motion.p>
-              <p className="mt-4 text-2xl font-bold text-white">
+              <p className="mt-4 font-display text-2xl font-bold text-white">
                 New RSVP for {celebration}!
               </p>
             </div>
@@ -138,15 +136,15 @@ export default function LiveDisplayPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-12 text-center"
       >
-        <p className="text-sm font-medium uppercase tracking-[0.4em] text-white/50">
+        <p className="font-display text-sm font-medium uppercase tracking-[0.4em] text-white/50">
           Live RSVP Tracker
         </p>
-        <h1 className="mt-3 text-5xl font-bold text-white md:text-6xl">
+        <h1 className="mt-3 font-display text-5xl font-bold text-white md:text-6xl">
           {data.brideName}{" "}
           <span style={{ color: data.primaryColorHex }}>&</span>{" "}
           {data.groomName}
         </h1>
-        <p className="mt-4 text-xl text-white/60">
+        <p className="mt-4 text-xl text-[#d4a017]">
           {totalAttending} of {totalInvited} confirmed
         </p>
       </motion.div>
@@ -182,14 +180,14 @@ export default function LiveDisplayPage() {
                     />
                     <circle
                       cx="40" cy="40" r="34"
-                      stroke={data.primaryColorHex}
+                      stroke="#d4a017"
                       strokeWidth="6" fill="none"
                       strokeLinecap="round"
                       strokeDasharray={`${(pct / 100) * 213.6} 213.6`}
                       className="transition-all duration-1000"
                     />
                   </svg>
-                  <span className="absolute text-lg font-bold text-white">
+                  <span className="absolute text-lg font-bold text-[#d4a017]">
                     {pct}%
                   </span>
                 </div>

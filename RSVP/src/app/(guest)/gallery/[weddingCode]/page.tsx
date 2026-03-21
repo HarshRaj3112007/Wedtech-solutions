@@ -100,7 +100,7 @@ export default function GalleryPage() {
 
   return (
     <div
-      className="min-h-screen px-4 py-12"
+      className="min-h-screen bg-mesh px-4 py-12"
       style={{
         background: `linear-gradient(180deg, ${wedding.primaryColorHex}08 0%, #ffffff 20%)`,
       }}
@@ -116,7 +116,7 @@ export default function GalleryPage() {
             Photo Gallery
           </p>
           <h1
-            className="mt-2 text-3xl font-bold sm:text-4xl"
+            className="mt-2 font-display text-3xl font-bold sm:text-4xl"
             style={{ color: wedding.primaryColorHex }}
           >
             {wedding.brideName} & {wedding.groomName}
@@ -140,12 +140,12 @@ export default function GalleryPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: Math.min(i * 0.05, 0.5) }}
-              className="mb-4 break-inside-avoid overflow-hidden rounded-xl bg-white shadow-md"
+              className="mb-4 break-inside-avoid overflow-hidden rounded-xl bg-white shadow-wedding hover:shadow-wedding-lg card-3d"
             >
               <img
                 src={photo.thumbnailUrl || photo.imageUrl}
                 alt={photo.caption || "Wedding photo"}
-                className="w-full object-cover"
+                className="w-full rounded-xl overflow-hidden object-cover"
                 loading="lazy"
               />
               {(photo.caption || photo.guest) && (

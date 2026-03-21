@@ -1,8 +1,27 @@
 import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { randomBytes } from "crypto";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { apiSuccess, apiError } from "@/lib/utils";
+
+function getRegistrationErrorMessage(error: unknown) {
+  if (error instanceof Prisma.PrismaClientInitializationError) {
+    const errorCode = error.errorCode;
+
+    if (errorCode === "P1000" || errorCode === "P1010") {
+      return "Database access is misconfigured. Update DATABASE_URL to a valid local PostgreSQL user and try again.";
+    }
+
+    if (errorCode === "P1001") {
+      return "PostgreSQL is not reachable. Start the local database and try again.";
+    }
+
+    return "Database setup is incomplete. Check DATABASE_URL and Prisma setup, then try again.";
+  }
+
+  return "Failed to create account";
+}
 
 export async function POST(req: Request) {
   try {
@@ -53,7 +72,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json(
-      apiError("Failed to create account"),
+      apiError(getRegistrationErrorMessage(error)),
       { status: 500 }
     );
   }

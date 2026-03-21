@@ -154,46 +154,54 @@ export default function AnalyticsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 glass border-[#d4a017]/10">
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-6">
           <Link href={`/weddings/${params.weddingId}`}>
             <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
           </Link>
-          <h1 className="text-lg font-bold">Analytics & Reports</h1>
+          <h1 className="text-lg font-bold font-display">Analytics & Reports</h1>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl space-y-6 px-6 py-8">
+      <main className="mx-auto max-w-6xl space-y-6 px-6 py-8 bg-mesh">
         {/* Overview Cards */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Total Guests</CardDescription>
-              <CardTitle className="text-3xl">{overview.totalGuests}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Response Rate</CardDescription>
-              <CardTitle className="text-3xl">{overview.responseRate}%</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Total Attending</CardDescription>
-              <CardTitle className="text-3xl text-green-600">{overview.totalAttending}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Pending RSVPs</CardDescription>
-              <CardTitle className="text-3xl text-amber-600">{overview.totalPending}</CardTitle>
-            </CardHeader>
-          </Card>
+          <div className="card-3d">
+            <Card className="card-3d-inner glass-card">
+              <CardHeader className="pb-2">
+                <CardDescription>Total Guests</CardDescription>
+                <CardTitle className="text-3xl">{overview.totalGuests}</CardTitle>
+              </CardHeader>
+            </Card>
+          </div>
+          <div className="card-3d">
+            <Card className="card-3d-inner glass-card">
+              <CardHeader className="pb-2">
+                <CardDescription>Response Rate</CardDescription>
+                <CardTitle className="text-3xl">{overview.responseRate}%</CardTitle>
+              </CardHeader>
+            </Card>
+          </div>
+          <div className="card-3d">
+            <Card className="card-3d-inner glass-card">
+              <CardHeader className="pb-2">
+                <CardDescription>Total Attending</CardDescription>
+                <CardTitle className="text-3xl text-green-600">{overview.totalAttending}</CardTitle>
+              </CardHeader>
+            </Card>
+          </div>
+          <div className="card-3d">
+            <Card className="card-3d-inner glass-card">
+              <CardHeader className="pb-2">
+                <CardDescription>Pending RSVPs</CardDescription>
+                <CardTitle className="text-3xl text-amber-600">{overview.totalPending}</CardTitle>
+              </CardHeader>
+            </Card>
+          </div>
         </div>
 
         {/* Event Attendance Forecast */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5" /> Attendance Forecast by Event
@@ -226,7 +234,7 @@ export default function AnalyticsPage() {
 
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Outstation vs Local Pie Chart */}
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5" /> Outstation vs Local (Attending)
@@ -266,7 +274,7 @@ export default function AnalyticsPage() {
           </Card>
 
           {/* Dietary Breakdown */}
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <UtensilsCrossed className="h-5 w-5" /> Dietary Breakdown
@@ -296,7 +304,7 @@ export default function AnalyticsPage() {
 
         {/* RSVP Response Timeline */}
         {rsvpTimeline.length > 0 && (
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
               <CardTitle>RSVP Responses Over Time</CardTitle>
             </CardHeader>
@@ -322,7 +330,7 @@ export default function AnalyticsPage() {
         )}
 
         {/* Per-Event Summary Table */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
             <CardTitle>Event Summary</CardTitle>
           </CardHeader>
@@ -360,7 +368,7 @@ export default function AnalyticsPage() {
 
         {/* Allergy Guests (Caterer Brief) */}
         {allergyGuests.length > 0 && (
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
               <CardTitle>Guests with Dietary Notes / Allergies</CardTitle>
               <CardDescription>For caterer briefing — guests with special requirements</CardDescription>
@@ -394,7 +402,7 @@ export default function AnalyticsPage() {
 
         {/* Pending RSVP List */}
         {pendingGuests.length > 0 && (
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>

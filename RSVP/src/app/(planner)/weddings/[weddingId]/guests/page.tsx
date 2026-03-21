@@ -440,13 +440,13 @@ export default function GuestsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 glass border-[#d4a017]/10">
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-6">
           <Link href={`/weddings/${params.weddingId}`}>
             <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
           </Link>
           <div className="flex-1">
-            <h1 className="text-lg font-bold">Guest Management</h1>
+            <h1 className="text-lg font-bold font-display">Guest Management</h1>
             <p className="text-xs text-muted-foreground">{total} guests total</p>
           </div>
           <div className="flex gap-2">
@@ -460,20 +460,20 @@ export default function GuestsPage() {
             <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
               <Upload className="mr-2 h-4 w-4" /> Import CSV
             </Button>
-            <Button size="sm" onClick={() => { setShowAddGuest(true); resetGuestForm(); }}>
+            <Button size="sm" onClick={() => { setShowAddGuest(true); resetGuestForm(); }} className="bg-gradient-to-r from-[#8b1a34] to-[#b42a4a] text-[#f5e6d0] shadow-wedding hover:shadow-wedding-lg transition-all">
               <Plus className="mr-2 h-4 w-4" /> Add Guest
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-6 py-6">
+      <main className="mx-auto max-w-6xl px-6 py-6 bg-mesh">
         {/* Filters */}
         <div className="mb-4 flex flex-wrap gap-3">
           <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              className="pl-9"
+              className="pl-9 input-neu"
               placeholder="Search name, phone, email..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -525,7 +525,7 @@ export default function GuestsPage() {
         </div>
 
         {/* Guest Table */}
-        <Card>
+        <Card className="glass-card">
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <Table>
@@ -695,7 +695,7 @@ export default function GuestsPage() {
             >
               Cancel
             </Button>
-            <Button onClick={handleSaveGuest} disabled={saving}>
+            <Button onClick={handleSaveGuest} disabled={saving} className="bg-gradient-to-r from-[#8b1a34] to-[#b42a4a] text-[#f5e6d0] shadow-wedding hover:shadow-wedding-lg transition-all">
               {saving ? "Saving..." : editingGuest ? "Save Changes" : "Add Guest"}
             </Button>
           </DialogFooter>
@@ -757,7 +757,7 @@ export default function GuestsPage() {
             <Button variant="outline" onClick={() => { setShowImport(false); setImportData(null); }}>
               Cancel
             </Button>
-            <Button onClick={handleImport} disabled={importing}>
+            <Button onClick={handleImport} disabled={importing} className="bg-gradient-to-r from-[#8b1a34] to-[#b42a4a] text-[#f5e6d0] shadow-wedding hover:shadow-wedding-lg transition-all">
               {importing ? "Importing..." : `Import ${importData?.length || 0} Guests`}
             </Button>
           </DialogFooter>

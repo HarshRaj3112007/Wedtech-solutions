@@ -58,6 +58,7 @@ function getThemeStyles(theme: string, primary: string, secondary: string) {
         background: `linear-gradient(160deg, #1a0a2e 0%, ${primary}30 50%, #1a0a2e 100%)`,
         textColor: "#f5e6c4",
         accentColor: "#d4af37",
+        goldTextAccent: "#d4a017",
       };
     case "MINIMAL":
       return {
@@ -78,8 +79,9 @@ function getThemeStyles(theme: string, primary: string, secondary: string) {
       return {
         ...base,
         background: `linear-gradient(180deg, ${secondary}15 0%, #fff5f5 30%, ${primary}10 100%)`,
-        textColor: "#8b0000",
-        accentColor: primary,
+        textColor: "#8b1a34",
+        accentColor: "#8b1a34",
+        goldAccent: "#d4a017",
       };
     case "FLORAL":
     default:
@@ -169,7 +171,7 @@ export function InviteClient({ event, wedding, guest, invite, theme }: InviteCli
         className="w-full max-w-lg"
       >
         {/* Main card */}
-        <div className="overflow-hidden rounded-2xl border border-white/20 bg-white/80 shadow-2xl backdrop-blur-sm dark:bg-zinc-900/80">
+        <div className="overflow-hidden rounded-2xl border border-white/20 bg-white/80 shadow-2xl shadow-wedding-lg backdrop-blur-sm dark:bg-zinc-900/80">
           {/* Banner area */}
           <div
             className="relative flex h-48 items-center justify-center"
@@ -279,7 +281,7 @@ export function InviteClient({ event, wedding, guest, invite, theme }: InviteCli
                 transition={{ delay: 1.1 }}
                 className="space-y-4"
               >
-                <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+                <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent divider-ornate" />
 
                 {rsvpStatus === "PENDING" && !isDeadlinePassed && (
                   <div className="text-center">
@@ -290,7 +292,7 @@ export function InviteClient({ event, wedding, guest, invite, theme }: InviteCli
                         onClick={() => handleQuickRsvp("ATTENDING")}
                         disabled={submitting}
                         style={{ backgroundColor: wedding.primaryColorHex }}
-                        className="text-white"
+                        className="text-white hover:-translate-y-0.5 transition-all duration-300 shadow-wedding"
                       >
                         <Check className="mr-2 h-4 w-4" />
                         {submitting ? "Submitting..." : "Joyfully Accept"}
@@ -300,6 +302,7 @@ export function InviteClient({ event, wedding, guest, invite, theme }: InviteCli
                         variant="outline"
                         onClick={() => handleQuickRsvp("DECLINED")}
                         disabled={submitting}
+                        className="hover:-translate-y-0.5 transition-all duration-300 shadow-wedding"
                       >
                         <X className="mr-2 h-4 w-4" />
                         Regretfully Decline

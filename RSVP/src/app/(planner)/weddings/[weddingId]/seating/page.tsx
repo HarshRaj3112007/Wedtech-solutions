@@ -142,19 +142,19 @@ export default function SeatingPage() {
 
   // Colour by side (bride vs groom)
   function guestChipColor(guest: AssignedGuest["guest"]) {
-    if (guest.isVip) return "bg-amber-100 text-amber-800 border-amber-300";
+    if (guest.isVip) return "bg-[#d4a017]/15 text-[#b8860b] border-[#d4a017]/30";
     return "bg-muted text-foreground";
   }
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 glass border-[#d4a017]/10">
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-6">
           <Link href={`/weddings/${params.weddingId}`}>
             <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
           </Link>
           <div className="flex-1">
-            <h1 className="text-lg font-bold">Seating Plan</h1>
+            <h1 className="text-lg font-bold font-display">Seating Plan</h1>
           </div>
           <Select value={selectedEvent} onValueChange={(v) => setSelectedEvent(v ?? "")}>
             <SelectTrigger className="w-[180px]"><SelectValue placeholder="Select event" /></SelectTrigger>
@@ -164,13 +164,13 @@ export default function SeatingPage() {
               ))}
             </SelectContent>
           </Select>
-          <Button size="sm" onClick={() => { setForm((f) => ({ ...f, eventId: selectedEvent })); setShowAdd(true); }}>
+          <Button size="sm" onClick={() => { setForm((f) => ({ ...f, eventId: selectedEvent })); setShowAdd(true); }} className="bg-gradient-to-r from-[#8b1a34] to-[#b42a4a] text-[#f5e6d0] shadow-wedding hover:shadow-wedding-lg transition-all">
             <Plus className="mr-2 h-4 w-4" /> Add Table
           </Button>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-6 py-6">
+      <main className="mx-auto max-w-6xl px-6 py-6 bg-mesh">
         {loading && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3].map((i) => <Skeleton key={i} className="h-40" />)}
@@ -193,41 +193,43 @@ export default function SeatingPage() {
               const filled = table.assignedGuests.length;
               const isFull = filled >= table.capacity;
               return (
-                <Card key={table.id} className={isFull ? "border-green-300" : ""}>
-                  <CardHeader className="pb-2">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-base">
-                          Table {table.tableNumber}
-                          {table.label && ` — ${table.label}`}
-                        </CardTitle>
-                        <CardDescription className="text-xs">
-                          {table.zone && `${table.zone} · `}
-                          {filled}/{table.capacity} seats filled
-                        </CardDescription>
+                <div className="card-3d" key={table.id}>
+                  <Card className={`card-3d-inner glass-card ${isFull ? "border-green-300" : ""}`}>
+                    <CardHeader className="pb-2">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <CardTitle className="text-base">
+                            Table {table.tableNumber}
+                            {table.label && ` — ${table.label}`}
+                          </CardTitle>
+                          <CardDescription className="text-xs">
+                            {table.zone && `${table.zone} · `}
+                            {filled}/{table.capacity} seats filled
+                          </CardDescription>
+                        </div>
+                        <Badge variant={isFull ? "default" : "outline"} className="text-xs">
+                          {isFull ? "Full" : `${table.capacity - filled} open`}
+                        </Badge>
                       </div>
-                      <Badge variant={isFull ? "default" : "outline"} className="text-xs">
-                        {isFull ? "Full" : `${table.capacity - filled} open`}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-1.5">
-                      {table.assignedGuests.map((ag) => (
-                        <span
-                          key={ag.id}
-                          className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs ${guestChipColor(ag.guest)}`}
-                        >
-                          {ag.guest.name}
-                          {ag.guest.isVip && " ★"}
-                        </span>
-                      ))}
-                      {filled === 0 && (
-                        <span className="text-xs text-muted-foreground">No guests assigned</span>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-wrap gap-1.5">
+                        {table.assignedGuests.map((ag) => (
+                          <span
+                            key={ag.id}
+                            className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs ${guestChipColor(ag.guest)}`}
+                          >
+                            {ag.guest.name}
+                            {ag.guest.isVip && " ★"}
+                          </span>
+                        ))}
+                        {filled === 0 && (
+                          <span className="text-xs text-muted-foreground">No guests assigned</span>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               );
             })}
           </div>
@@ -272,7 +274,7 @@ export default function SeatingPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowAdd(false)}>Cancel</Button>
-            <Button onClick={handleAddTable} disabled={saving}>
+            <Button onClick={handleAddTable} disabled={saving} className="bg-gradient-to-r from-[#8b1a34] to-[#b42a4a] text-[#f5e6d0] shadow-wedding hover:shadow-wedding-lg transition-all">
               {saving ? "Adding..." : "Add Table"}
             </Button>
           </DialogFooter>

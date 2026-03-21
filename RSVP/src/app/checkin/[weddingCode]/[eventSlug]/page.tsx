@@ -171,7 +171,7 @@ export default function CheckInPage() {
               value={pin}
               onChange={(e) => setPin(e.target.value)}
               maxLength={6}
-              className="text-center text-2xl tracking-widest"
+              className="input-neu text-center text-2xl tracking-widest"
             />
             <Input
               placeholder="Your name (optional)"
@@ -193,7 +193,7 @@ export default function CheckInPage() {
       <div className="sticky top-0 z-50 bg-primary px-4 py-3 text-primary-foreground">
         <div className="mx-auto flex max-w-lg items-center justify-between">
           <div>
-            <p className="text-sm font-medium">{eventName || "Event Check-In"}</p>
+            <p className="font-display text-sm font-medium">{eventName || "Event Check-In"}</p>
           </div>
           <div className="flex items-center gap-2 text-lg font-bold">
             <Users className="h-5 w-5" />
@@ -207,7 +207,7 @@ export default function CheckInPage() {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
           <Input
-            className="pl-10 text-lg"
+            className="input-neu pl-10 text-lg"
             placeholder="Search guest name or phone..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -221,7 +221,7 @@ export default function CheckInPage() {
             className={
               lastResult.alreadyCheckedIn
                 ? "border-amber-300 bg-amber-50 dark:bg-amber-950"
-                : "border-green-300 bg-green-50 dark:bg-green-950"
+                : "border-green-300 bg-green-50 shadow-gold-glow dark:bg-green-950"
             }
           >
             <CardContent className="py-4">

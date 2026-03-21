@@ -318,7 +318,7 @@ export default function WeddingDetailPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 glass border-[#d4a017]/10">
         <div className="mx-auto flex h-16 max-w-5xl items-center gap-4 px-6">
           <Link href="/dashboard">
             <Button variant="ghost" size="icon">
@@ -326,7 +326,7 @@ export default function WeddingDetailPage() {
             </Button>
           </Link>
           <div className="flex-1">
-            <h1 className="text-lg font-bold">
+            <h1 className="text-lg font-bold font-display">
               {wedding.brideName} & {wedding.groomName}
             </h1>
             <p className="text-xs text-muted-foreground">
@@ -343,7 +343,7 @@ export default function WeddingDetailPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-6 py-8">
+      <main className="mx-auto max-w-5xl px-6 py-8 bg-paisley-corner">
         <Tabs defaultValue="events">
           <TabsList className="mb-6">
             <TabsTrigger value="events">Events</TabsTrigger>
@@ -364,7 +364,7 @@ export default function WeddingDetailPage() {
                 }}
               >
                 <DialogTrigger
-                  render={<Button><Plus className="mr-2 h-4 w-4" /> Add Event</Button>}
+                  render={<Button className="bg-gradient-to-r from-[#8b1a34] to-[#b42a4a] text-[#f5e6d0] shadow-wedding hover:shadow-wedding-lg transition-all"><Plus className="mr-2 h-4 w-4" /> Add Event</Button>}
                 />
                 <DialogContent className="max-w-2xl">
                   <DialogHeader>
@@ -378,7 +378,7 @@ export default function WeddingDetailPage() {
                     <Button variant="outline" onClick={() => setShowNewEvent(false)}>
                       Cancel
                     </Button>
-                    <Button onClick={handleSaveEvent} disabled={savingEvent}>
+                    <Button onClick={handleSaveEvent} disabled={savingEvent} className="bg-gradient-to-r from-[#8b1a34] to-[#b42a4a] text-[#f5e6d0] shadow-wedding hover:shadow-wedding-lg transition-all">
                       {savingEvent ? "Creating..." : "Create Event"}
                     </Button>
                   </DialogFooter>
@@ -406,7 +406,7 @@ export default function WeddingDetailPage() {
                   <Button variant="outline" onClick={() => setEditingEvent(null)}>
                     Cancel
                   </Button>
-                  <Button onClick={handleSaveEvent} disabled={savingEvent}>
+                  <Button onClick={handleSaveEvent} disabled={savingEvent} className="bg-gradient-to-r from-[#8b1a34] to-[#b42a4a] text-[#f5e6d0] shadow-wedding hover:shadow-wedding-lg transition-all">
                     {savingEvent ? "Saving..." : "Save Changes"}
                   </Button>
                 </DialogFooter>
@@ -427,99 +427,101 @@ export default function WeddingDetailPage() {
               )}
 
               {wedding.events.map((event) => (
-                <Card key={event.id} className="relative">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <CardTitle className="text-base">{event.name}</CardTitle>
-                      <div className="flex gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7"
-                          onClick={() => openEditEvent(event)}
-                        >
-                          <Pencil className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 text-destructive"
-                          onClick={() => handleDeleteEvent(event.id, event.name)}
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
+                <div className="card-3d" key={event.id}>
+                  <Card className="relative card-3d-inner glass-card">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between">
+                        <CardTitle className="text-base">{event.name}</CardTitle>
+                        <div className="flex gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() => openEditEvent(event)}
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-destructive"
+                            onClick={() => handleDeleteEvent(event.id, event.name)}
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {new Date(event.date).toLocaleDateString("en-IN", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                        {event.time && ` · ${event.time}`}
-                      </span>
-                      {event.venue && (
+                      <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          {event.venue}
+                          <Calendar className="h-3 w-3" />
+                          {new Date(event.date).toLocaleDateString("en-IN", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                          {event.time && ` · ${event.time}`}
                         </span>
+                        {event.venue && (
+                          <span className="flex items-center gap-1">
+                            <MapPin className="h-3 w-3" />
+                            {event.venue}
+                          </span>
+                        )}
+                        {event.dressCode && (
+                          <span className="flex items-center gap-1">
+                            <Shirt className="h-3 w-3" />
+                            {event.dressCode}
+                          </span>
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      {/* RSVP counts */}
+                      <div className="grid grid-cols-3 gap-2 text-center text-sm">
+                        <div className="rounded-md bg-green-50 px-2 py-1.5 dark:bg-green-950">
+                          <p className="text-lg font-bold text-green-700 dark:text-green-400">
+                            {event.rsvpCounts.attending}
+                          </p>
+                          <p className="text-[10px] text-green-600 dark:text-green-500">Attending</p>
+                        </div>
+                        <div className="rounded-md bg-red-50 px-2 py-1.5 dark:bg-red-950">
+                          <p className="text-lg font-bold text-red-700 dark:text-red-400">
+                            {event.rsvpCounts.declined}
+                          </p>
+                          <p className="text-[10px] text-red-600 dark:text-red-500">Declined</p>
+                        </div>
+                        <div className="rounded-md bg-amber-50 px-2 py-1.5 dark:bg-amber-950">
+                          <p className="text-lg font-bold text-amber-700 dark:text-amber-400">
+                            {event.rsvpCounts.pending}
+                          </p>
+                          <p className="text-[10px] text-amber-600 dark:text-amber-500">Pending</p>
+                        </div>
+                      </div>
+                      {event.rsvpCounts.totalPax > 0 && (
+                        <p className="mt-2 text-center text-xs text-muted-foreground">
+                          Total PAX: <strong>{event.rsvpCounts.totalPax}</strong>
+                          {event.rsvpCounts.plusOnes > 0 && ` (${event.rsvpCounts.plusOnes} +1s)`}
+                          {event.rsvpCounts.children > 0 && ` (${event.rsvpCounts.children} children)`}
+                        </p>
                       )}
-                      {event.dressCode && (
+                      <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
-                          <Shirt className="h-3 w-3" />
-                          {event.dressCode}
+                          <Users className="h-3 w-3" />
+                          {event.rsvpCounts.total} invited
                         </span>
+                        <span className="flex items-center gap-1">
+                          <BarChart3 className="h-3 w-3" />
+                          {event._count.checkIns} checked in
+                        </span>
+                      </div>
+                      {!event.isActive && (
+                        <Badge variant="secondary" className="mt-2">
+                          Inactive
+                        </Badge>
                       )}
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    {/* RSVP counts */}
-                    <div className="grid grid-cols-3 gap-2 text-center text-sm">
-                      <div className="rounded-md bg-green-50 px-2 py-1.5 dark:bg-green-950">
-                        <p className="text-lg font-bold text-green-700 dark:text-green-400">
-                          {event.rsvpCounts.attending}
-                        </p>
-                        <p className="text-[10px] text-green-600 dark:text-green-500">Attending</p>
-                      </div>
-                      <div className="rounded-md bg-red-50 px-2 py-1.5 dark:bg-red-950">
-                        <p className="text-lg font-bold text-red-700 dark:text-red-400">
-                          {event.rsvpCounts.declined}
-                        </p>
-                        <p className="text-[10px] text-red-600 dark:text-red-500">Declined</p>
-                      </div>
-                      <div className="rounded-md bg-amber-50 px-2 py-1.5 dark:bg-amber-950">
-                        <p className="text-lg font-bold text-amber-700 dark:text-amber-400">
-                          {event.rsvpCounts.pending}
-                        </p>
-                        <p className="text-[10px] text-amber-600 dark:text-amber-500">Pending</p>
-                      </div>
-                    </div>
-                    {event.rsvpCounts.totalPax > 0 && (
-                      <p className="mt-2 text-center text-xs text-muted-foreground">
-                        Total PAX: <strong>{event.rsvpCounts.totalPax}</strong>
-                        {event.rsvpCounts.plusOnes > 0 && ` (${event.rsvpCounts.plusOnes} +1s)`}
-                        {event.rsvpCounts.children > 0 && ` (${event.rsvpCounts.children} children)`}
-                      </p>
-                    )}
-                    <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Users className="h-3 w-3" />
-                        {event.rsvpCounts.total} invited
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <BarChart3 className="h-3 w-3" />
-                        {event._count.checkIns} checked in
-                      </span>
-                    </div>
-                    {!event.isActive && (
-                      <Badge variant="secondary" className="mt-2">
-                        Inactive
-                      </Badge>
-                    )}
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </div>
               ))}
             </div>
           </TabsContent>
@@ -689,7 +691,7 @@ function WeddingSettings({
           </div>
         </CardContent>
         <div className="flex justify-end gap-3 border-t p-6">
-          <Button onClick={handleSave} disabled={saving}>
+          <Button onClick={handleSave} disabled={saving} className="bg-gradient-to-r from-[#8b1a34] to-[#b42a4a] text-[#f5e6d0] shadow-wedding hover:shadow-wedding-lg transition-all">
             {saving ? "Saving..." : "Save Changes"}
           </Button>
         </div>

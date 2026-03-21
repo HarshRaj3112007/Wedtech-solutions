@@ -68,21 +68,21 @@ export default function NewWeddingPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 glass border-[#d4a017]/10">
         <div className="mx-auto flex h-16 max-w-3xl items-center gap-4 px-6">
           <Link href="/dashboard">
             <Button variant="ghost" size="icon">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
-          <h1 className="text-lg font-bold">Create New Wedding</h1>
+          <h1 className="text-lg font-bold font-display">Create New Wedding</h1>
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-6 py-8">
+      <main className="mx-auto max-w-3xl px-6 py-8 bg-mesh">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Couple Names */}
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
               <CardTitle>Couple Details</CardTitle>
               <CardDescription>
@@ -92,14 +92,14 @@ export default function NewWeddingPage() {
             <CardContent className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="brideName">Bride&apos;s Name</Label>
-                <Input id="brideName" placeholder="Ananya" {...register("brideName")} />
+                <Input id="brideName" className="input-neu" placeholder="Ananya" {...register("brideName")} />
                 {errors.brideName && (
                   <p className="text-sm text-destructive">{errors.brideName.message}</p>
                 )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="groomName">Groom&apos;s Name</Label>
-                <Input id="groomName" placeholder="Rohan" {...register("groomName")} />
+                <Input id="groomName" className="input-neu" placeholder="Rohan" {...register("groomName")} />
                 {errors.groomName && (
                   <p className="text-sm text-destructive">{errors.groomName.message}</p>
                 )}
@@ -108,7 +108,7 @@ export default function NewWeddingPage() {
           </Card>
 
           {/* Wedding Code & Location */}
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
               <CardTitle>Wedding Details</CardTitle>
               <CardDescription>
@@ -120,6 +120,7 @@ export default function NewWeddingPage() {
                 <Label htmlFor="weddingCode">Wedding Code (URL slug)</Label>
                 <Input
                   id="weddingCode"
+                  className="input-neu"
                   placeholder="ananya-rohan-2026"
                   {...register("weddingCode")}
                 />
@@ -133,18 +134,18 @@ export default function NewWeddingPage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="city">City</Label>
-                  <Input id="city" placeholder="Udaipur" {...register("city")} />
+                  <Input id="city" className="input-neu" placeholder="Udaipur" {...register("city")} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="venueName">Venue</Label>
-                  <Input id="venueName" placeholder="The Leela Palace" {...register("venueName")} />
+                  <Input id="venueName" className="input-neu" placeholder="The Leela Palace" {...register("venueName")} />
                 </div>
               </div>
             </CardContent>
           </Card>
 
           {/* Theming */}
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
               <CardTitle>Colour Theme</CardTitle>
               <CardDescription>
@@ -165,7 +166,7 @@ export default function NewWeddingPage() {
                         register("primaryColorHex").onChange(event);
                       }}
                     />
-                    <Input id="primaryColorHex" {...register("primaryColorHex")} className="font-mono" />
+                    <Input id="primaryColorHex" {...register("primaryColorHex")} className="font-mono input-neu" />
                   </div>
                   {errors.primaryColorHex && (
                     <p className="text-sm text-destructive">{errors.primaryColorHex.message}</p>
@@ -183,7 +184,7 @@ export default function NewWeddingPage() {
                         register("secondaryColorHex").onChange(event);
                       }}
                     />
-                    <Input id="secondaryColorHex" {...register("secondaryColorHex")} className="font-mono" />
+                    <Input id="secondaryColorHex" {...register("secondaryColorHex")} className="font-mono input-neu" />
                   </div>
                   {errors.secondaryColorHex && (
                     <p className="text-sm text-destructive">{errors.secondaryColorHex.message}</p>
@@ -202,19 +203,20 @@ export default function NewWeddingPage() {
           </Card>
 
           {/* Settings */}
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
               <CardTitle>Settings</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="timezone">Timezone</Label>
-                <Input id="timezone" {...register("timezone")} />
+                <Input id="timezone" className="input-neu" {...register("timezone")} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="rsvpDeadline">RSVP Deadline (optional)</Label>
                 <Input
                   id="rsvpDeadline"
+                  className="input-neu"
                   type="datetime-local"
                   {...register("rsvpDeadline")}
                 />
@@ -224,7 +226,7 @@ export default function NewWeddingPage() {
               <Link href="/dashboard">
                 <Button variant="outline">Cancel</Button>
               </Link>
-              <Button type="submit" disabled={loading}>
+              <Button type="submit" disabled={loading} className="bg-gradient-to-r from-[#8b1a34] to-[#b42a4a] text-[#f5e6d0] shadow-wedding hover:shadow-wedding-lg transition-all">
                 {loading ? "Creating..." : "Create Wedding"}
               </Button>
             </CardFooter>

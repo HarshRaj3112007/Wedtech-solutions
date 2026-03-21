@@ -4,8 +4,7 @@ import { z } from "zod";
 // Shared validators used across forms and API routes
 // ─────────────────────────────────────────────────────────────
 
-export const indianPhoneRegex = /^\+91[6-9]\d{9}$/;
-
+export const indianPhoneRegex = /^\+91\s?[6-9]\d{4}\s?\d{5}$/;
 export const phoneSchema = z
   .string()
   .regex(indianPhoneRegex, "Must be a valid Indian mobile number (+91...)");

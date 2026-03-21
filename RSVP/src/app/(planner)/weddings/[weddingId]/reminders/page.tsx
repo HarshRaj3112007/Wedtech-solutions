@@ -114,18 +114,18 @@ export default function RemindersPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 glass border-[#d4a017]/10">
         <div className="mx-auto flex h-16 max-w-4xl items-center gap-4 px-6">
           <Link href={`/weddings/${params.weddingId}`}>
             <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
           </Link>
-          <h1 className="text-lg font-bold">Reminder Engine</h1>
+          <h1 className="text-lg font-bold font-display">Reminder Engine</h1>
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl space-y-6 px-6 py-8">
+      <main className="mx-auto max-w-4xl space-y-6 px-6 py-8 bg-mesh">
         {/* Blast to all pending */}
-        <Card className="border-amber-200 bg-amber-50/50 dark:border-amber-800 dark:bg-amber-950/30">
+        <Card className="border-[#d4a017]/20 bg-[#d4a017]/5 dark:border-[#d4a017]/30 dark:bg-[#d4a017]/10">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Send className="h-5 w-5" /> Blast to All Pending
@@ -159,14 +159,14 @@ export default function RemindersPage() {
             <p className="text-xs text-muted-foreground">
               Variables: {"{guest_name}"}, {"{event_name}"}, {"{event_date}"}, {"{rsvp_link}"}
             </p>
-            <Button onClick={handleBlast} disabled={blasting}>
+            <Button onClick={handleBlast} disabled={blasting} className="bg-gradient-to-r from-[#8b1a34] to-[#b42a4a] text-[#f5e6d0] shadow-wedding hover:shadow-wedding-lg transition-all">
               {blasting ? "Sending..." : "Send to All Pending Guests"}
             </Button>
           </CardContent>
         </Card>
 
         {/* Add schedule */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Bell className="h-5 w-5" /> Automated Reminder Schedules
@@ -198,7 +198,7 @@ export default function RemindersPage() {
                 </Select>
               </div>
               <div className="flex items-end space-y-2 sm:col-span-2">
-                <Button onClick={handleAddSchedule} disabled={saving} className="w-full">
+                <Button onClick={handleAddSchedule} disabled={saving} className="w-full bg-gradient-to-r from-[#8b1a34] to-[#b42a4a] text-[#f5e6d0] shadow-wedding hover:shadow-wedding-lg transition-all">
                   <Plus className="mr-2 h-4 w-4" />
                   {saving ? "Saving..." : "Add Schedule"}
                 </Button>
